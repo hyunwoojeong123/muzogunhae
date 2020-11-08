@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<h1>회원정보수정</h1>
+<form action="" method="POST">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <input type="submit">
+</form>
+<br>
+<form action="{% url 'accounts:delete' %}"method='POST'>
+{% csrf_token %}
+<button>탈퇴</button>
+</form>
+{% endblock  %}
+

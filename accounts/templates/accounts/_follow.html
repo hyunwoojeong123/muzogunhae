@@ -1,0 +1,20 @@
+<div class="jumbotron text-center text-white bg-dark">
+  <p class="lead mb-1">INFORMATION</p>
+  <h1 class="display-4">{{ person.username }}</h1>
+  <hr>
+  {% with followings=person.followings.all followers=person.followers.all %}
+    <p class="lead">
+      FOLLOWING : {{ followings|length }} / FOLLOWER : <span id='follow-count-{{person.pk}}'>{{ followers|length }}</span>
+    </p>
+    {% if request.user != person %}
+      <form id='follow-form' data-person-id="{{person.pk}}">
+        {% csrf_token %}
+        {% if request.user in followers %}
+          <button id='follow-btn-{{person.pk}}' class="btn-secondary btn-lg" role="button">Unfollow</button>
+        {% else %}
+          <button id='follow-btn-{{person.pk}}' class="btn-primary btn-lg" role="button">Follow</button>
+        {% endif %}
+      </form>
+    {% endif %}
+  {% endwith %}
+</div>

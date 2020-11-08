@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center">{{ person.username }}님의 프로필</h1>
+
+{% include 'accounts/_follow.html' %}
+
+<hr>
+
+<h2>{{ person.username }}가 쓴 글</h2>
+{% for article in person.article_set.all %}
+  <div>{{ article.title }}</div>
+{% endfor %}
+
+<hr>
+
+<h2>{{ person.username }}가 쓴 댓글</h2>
+{% for comment in person.comment_set.all %}
+  <div>{{ comment.content }}</div>
+{% endfor %}
+
+<hr>
+
+<h2>{{ person.username }}가 좋아요한 글</h2>
+{% for article in person.like_articles.all %}
+  <div>{{ article.title }}</div>
+{% endfor %}
+
+<hr>
+
+<a href="{% url 'articles:index' %}">back</a>
+{% endblock  %}
+
+
+{% block script %}
+  <script>
+    const followForm = document.querySelector('#follow-form')
+    const csrfTokenInput = document.querySelector('input[name="csrfmiddlewaretoken"]')
+    const csrftoken = csrfTokenInput.value
+    followForm.addEventListener('submit',(event)=>{
+      event.preventDefault()
+      const personId = followForm.dataset.personId
+
+      axios.post(`/accounts/follow/${personId}/`,{},{headers: {'X-CSRFToken': csrftoken}}).then(((response)=>{
+          
+          const followBtn = document.querySelector(`#follow-btn-${personId}`)
+          const followCount = document.querySelector(`#follow-count-${personId}`)
+          followBtn.className = response.data.followed ? 'btn-secondary btn-lg' : 'btn-primary btn-lg'  
+          followBtn.innerText = response.data.followed ? 'Unfollow' : 'Follow'  
+          followCount.innerText = response.data.count
+          
+        }))
+      })
+  </script>
+{% endblock script %}
